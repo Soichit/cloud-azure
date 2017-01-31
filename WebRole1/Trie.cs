@@ -65,14 +65,14 @@ namespace WebRole1
                 return current;
             }
             char ch = prefix[index];
-            TrieNode node = current.Dict[ch];
             /// if passed in prefix doesn't exist
-            if (node == null)
+            if (!current.Dict.ContainsKey(ch))
             {
                 return null;
-            }
+            }              
             else
             {
+                TrieNode node = current.Dict[ch];
                 return searchPrefix(node, prefix, index + 1);
             }
         }

@@ -22,7 +22,7 @@ namespace WebRole1
     public class WebService1 : System.Web.Services.WebService
     {
 
-        public Trie trie = new Trie();
+        public static Trie trie = new Trie();
 
 
         [WebMethod]
@@ -54,7 +54,7 @@ namespace WebRole1
         }
 
         [WebMethod]
-        public void buildTrie()
+        public String buildTrie()
         {
             //String text = System.Text.Encoding.UTF8.GetString(memoryStream.ToArray());
             //using (StreamReader sr = new StreamReader("/Users/iGuest/documents/wiki-output.txt"));
@@ -71,7 +71,7 @@ namespace WebRole1
                     if (titleCounter % 1000 == 0)
                     {
                         float memory = theMemCounter.NextValue();
-                        if (memory <= 20)
+                        if (memory <= 50)
                         {
                             break;
                         }
@@ -81,6 +81,7 @@ namespace WebRole1
                     titleCounter++;
                 }
             }
+            return "done!";
         }
 
         [WebMethod]
