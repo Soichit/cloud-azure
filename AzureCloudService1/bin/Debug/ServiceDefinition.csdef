@@ -19,16 +19,17 @@
     </Sites>
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" />
+      <Setting name="APPINSIGHTS_INSTRUMENTATIONKEY" />
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="Endpoint1" protocol="http" port="80" />
     </Endpoints>
     <Contents>
       <Content destination=".\">
-        <SourceDirectory path="C:\Users\iGuest\Documents\Visual Studio 2015\Projects\AzureCloudService1\AzureCloudService1\rcf\Debug\WebRole1Content\" />
+        <SourceDirectory path="C:\Users\iGuest\Documents\cloud-azure\AzureCloudService1\rcf\Debug\WebRole1Content\" />
       </Content>
       <Content destination=".\">
-        <SourceDirectory path="C:\Users\iGuest\Documents\Visual Studio 2015\Projects\AzureCloudService1\AzureCloudService1\ecf\WebRole1Content\" />
+        <SourceDirectory path="C:\Users\iGuest\Documents\cloud-azure\AzureCloudService1\ecf\WebRole1Content\" />
       </Content>
     </Contents>
     <Imports>
