@@ -8,6 +8,9 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Services;
+using System.Web.Script.Services;
+using System.Web.Script.Serialization;
+
 
 namespace WebRole1
 {
@@ -18,15 +21,14 @@ namespace WebRole1
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [System.ComponentModel.ToolboxItem(false)]
     // To allow this Web Service to be called from script, using ASP.NET AJAX, uncomment the following line. 
-    // [System.Web.Script.Services.ScriptService]
+    [ScriptService]
     public class WebService1 : System.Web.Services.WebService
     {
 
         public static Trie trie = new Trie();
 
-
         [WebMethod]
-        public void downloadWiki()
+        public String downloadWiki()
         {
             // Retrieve storage account from connection string.
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
@@ -51,6 +53,7 @@ namespace WebRole1
                     }
                 }
             }
+            return "done!";
         }
 
         [WebMethod]
@@ -71,7 +74,7 @@ namespace WebRole1
                     if (titleCounter % 1000 == 0)
                     {
                         float memory = theMemCounter.NextValue();
-                        if (memory <= 50)
+                        if (memory <= 4000)
                         {
                             break;
                         }
@@ -85,11 +88,14 @@ namespace WebRole1
         }
 
         [WebMethod]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public List<String> SearchTrie(String input)
         {
             List<String> result = trie.search(input);
-            //List<String> result = new List<string>(new string[] { "element1", "element2", "element3" });
+            JavaScriptSerializer jss = new JavaScriptSerializer();
+
             return result;
+            //return jss.Serialize(result);
         }
     }
 }

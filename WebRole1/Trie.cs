@@ -44,8 +44,12 @@ namespace WebRole1
 
         public List<String> search(String input)
         {
-            TrieNode current = searchPrefix(root, input, 0);
             List<String> list = new List<String>();
+            if (input == null)
+            {
+                return list;
+            }
+            TrieNode current = searchPrefix(root, input, 0);
 
             /// if passed in prefix doesn't exist, then return empty list
             if (current == null)
