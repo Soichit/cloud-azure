@@ -12,6 +12,7 @@ namespace WebRole1
     public class Trie
     {
         private static TrieNode root;
+        private static int hybridCapacity = 2;
 
         /// constructor
         public Trie()
@@ -19,33 +20,85 @@ namespace WebRole1
             root = new TrieNode();
         }
 
-        public void insert(String word)
+
+        public String insert(String word)
         {
-            TrieNode current = root;
-            for (int i = 0; i < word.Length; i++)
+            if (word == null || word.Length == 0)
             {
-                char ch = word[i];
-                TrieNode node;
-                // if the char key is not already in the dictionary
-                if (!current.Dict.ContainsKey(ch))
-                {
-                    node = new TrieNode();
-                    current.Dict.Add(ch, node);
-                }
-                else
-                {
-                    node = current.Dict[ch];
-                }
-                current = node;
+                return "can't do empty";
             }
-            current.SetEndOfWord(true);
+            return rearrange(root, word);
         }
+
+        public String rearrange(TrieNode current, String tempWord)
+        {
+            current.HybridList.Add(tempWord);
+            //if passed in word's length is 1, then mark node as end of word
+            if (tempWord.Length == 1)
+            {
+                current.SetEndOfWord(true);
+                return "done";
+            }
+
+            if (current.HybridList.Count <= hybridCapacity)
+            {
+                return "done";
+            }
+            else
+            {
+                //List<String> tempList = current.HybridList;
+                //current.HybridList.Clear();
+                foreach (String item in current.HybridList)
+                {
+                    //get first letter in item
+                    char ch = item[0];
+                    TrieNode node;
+
+                    //check that first letter is in the dictionary key
+                    if (current.Dict.ContainsKey(ch))
+                    {
+                        //if it does, pass that word into that node
+                        node = current.Dict[ch];
+                        //return rearrange(node, tempWord);
+                    }
+                    else
+                    {
+                        //if it doesn't, create a new node with that letter and add the rest of the letters into the hybrid
+                        node = new TrieNode();
+                        current.Dict.Add(ch, node);
+                        //String test = tempWord.Substring(1, tempWord.Length - 1);
+                    }
+                    if (item.Length != 1)
+                    {
+                        rearrange(node, item.Substring(1, item.Length - 1));
+                    }
+                }
+                current.HybridList.Clear();
+                return "done";
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        }
+
+
 
 
         public List<String> search(String input)
         {
             List<String> list = new List<String>();
-            if (input == null)
+            if (input == null || input.Length == 0)
             {
                 return list;
             }

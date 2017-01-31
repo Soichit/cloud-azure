@@ -64,8 +64,8 @@ namespace WebRole1
 
             int titleCounter = 1;
             PerformanceCounter theMemCounter = new PerformanceCounter("Memory", "Available MBytes");
-            //string path = "/Users/iGuest/documents/abc.txt";
-            string path = "/Users/iGuest/documents/wiki-output.txt";
+            string path = "/Users/iGuest/documents/abc.txt";
+            //string path = "/Users/iGuest/documents/wiki-output.txt";
 
             using (StreamReader sr = new StreamReader(path))
             {
