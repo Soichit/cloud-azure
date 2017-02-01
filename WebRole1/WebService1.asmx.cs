@@ -25,8 +25,10 @@ namespace WebRole1
     public class WebService1 : System.Web.Services.WebService
     {
 
-        public static Trie trie = new Trie();
+        private static Trie trie = new Trie();
         private string filePath = Path.GetTempPath() + "\\wiki.txt"; //"/Users/iGuest/documents/wiki-output.txt";
+        private int memoryCap = 4000; // change memory to 20
+
 
         [WebMethod]
         public String downloadWiki()
@@ -70,8 +72,8 @@ namespace WebRole1
                     if (titleCounter % 1000 == 0)
                     {
                         float memory = theMemCounter.NextValue();
-                        // change memory to 20
-                        if (memory <= 4000)
+                       
+                        if (memory <= memoryCap)
                         {
                             break;
                         }
