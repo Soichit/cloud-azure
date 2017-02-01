@@ -26,6 +26,7 @@ namespace WebRole1
     {
 
         public static Trie trie = new Trie();
+        private string filePath = Path.GetTempPath() + "\\wiki.txt"; //"/Users/iGuest/documents/wiki-output.txt";
 
         [WebMethod]
         public String downloadWiki()
@@ -46,7 +47,7 @@ namespace WebRole1
                         CloudBlockBlob blob = (CloudBlockBlob)item;
                         ///Retrieve reference to my blob
                         CloudBlockBlob blockBlob = container.GetBlockBlobReference("ProcessedWikiDump.txt");
-                        using (var fileStream = System.IO.File.OpenWrite("/Users/iGuest/documents/wiki-output.txt"))
+                        using (var fileStream = System.IO.File.OpenWrite(filePath))
                         {
                            blob.DownloadToStream(fileStream);
                         }
@@ -61,16 +62,15 @@ namespace WebRole1
         {
             int titleCounter = 1;
             PerformanceCounter theMemCounter = new PerformanceCounter("Memory", "Available MBytes");
-            //string path = "/Users/iGuest/documents/abc.txt";
-            string path = "/Users/iGuest/documents/wiki-output.txt";
 
-            using (StreamReader sr = new StreamReader(path))
+            using (StreamReader sr = new StreamReader(filePath))
             {
                 while (!sr.EndOfStream)
                 {
                     if (titleCounter % 1000 == 0)
                     {
                         float memory = theMemCounter.NextValue();
+                        // change memory to 20
                         if (memory <= 4000)
                         {
                             break;
