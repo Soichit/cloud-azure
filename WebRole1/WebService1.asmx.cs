@@ -59,9 +59,6 @@ namespace WebRole1
         [WebMethod]
         public String buildTrie()
         {
-            //String text = System.Text.Encoding.UTF8.GetString(memoryStream.ToArray());
-            //using (StreamReader sr = new StreamReader("/Users/iGuest/documents/wiki-output.txt"));
-
             int titleCounter = 1;
             PerformanceCounter theMemCounter = new PerformanceCounter("Memory", "Available MBytes");
             //string path = "/Users/iGuest/documents/abc.txt";
@@ -92,9 +89,12 @@ namespace WebRole1
         public List<String> SearchTrie(String input)
         {
             List<String> result = trie.search(input);
-            JavaScriptSerializer jss = new JavaScriptSerializer();
-
+            for (int i = 0; i < result.Count; i++)
+            {
+                result[i] = result[i].Replace('_', ' ');
+            }
             return result;
+            //JavaScriptSerializer jss = new JavaScriptSerializer();
             //return jss.Serialize(result);
         }
     }

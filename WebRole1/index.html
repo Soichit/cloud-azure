@@ -4,42 +4,77 @@
     <title></title>
     <meta charset="utf-8" />
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="StyleSheet1.css">
 </head>
 
 <body>
+    <img src="imgs/noodle2.jpg" />
     <div>
-        <input id="input" type="text"><br>
-        <input id="submit" type="submit" value="Submit">
+        <input id="input" type="text" list="dropdown">
+        <datalist id="dropdown">
+            <!--<option value="AL">Alabama</option>
+            <option value="Alab ma">Alab_ma</option>
+            <option value="AK">Alaska</option>
+            <option value="AZ">Arizona</option>
+            <option value="AR">Arkansas</option>-->
+        </datalist>
+        
+        <!--<input id="submit" type="submit" value="Submit">-->
     </div>
-
-    <div>
+    <!--<div>
         <ul id="output"></ul>
-    </div>
+    </div>-->
+
 
     <script>
         $(document).ready(function () {
 
+            //var cars = ["Saab", "Volvo", "BMW"];
+            //$.each(cars, function () {
+            //    $("#dropdown").append("<option value='" + this + "'>");
+            //})
+
+            //function replaceSpaces(input) {
+            //    var checkedInput = input.replace(/ /g, "_")
+            //    return checkedInput;
+            //};
+
+            //function replaceUnderScores(input) {
+            //    var checkedInput = input.replace(/ /g, "_")
+            //    return checkedInput;
+            //};
 
 
-
-            $("#submit").click(function () {
+            $("#input").keyup(function () {
                 var input = $('#input').val();
+                var checkedInput = input.replace(/ /g, "_")
+                console.log("checkedInput: " + checkedInput);
+
+                //$('#input').val(checkedInput);
+                //$('#hidden').val(checkedInput);
+                
+
                 var url = "WebService1.asmx/SearchTrie";
                 $.ajax({
-                    data: JSON.stringify({input: input}),
+                    data: JSON.stringify({ input: checkedInput }),
                     dataType: "json",
                     url: url,
                     type: "POST",
                     contentType: "application/json; charset=utf-8",
                     success: function (result) {
                         console.log(result);
-                        $("#output").empty();
+                        $("#dropdown").empty();
                         $.each(result.d, function () {
-                            $("#output").append("<li>" + this + "</li>");
+                            // console.log("" + this);
+                            $("#dropdown").append("<option value='" + this + "'>");
                         })
                     }
                 });
             });
+
+
+
+
         })
     </script>
 </body>
