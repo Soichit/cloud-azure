@@ -26,7 +26,9 @@ namespace WebRole1
     {
 
         private static Trie trie = new Trie();
-        private string filePath = Path.GetTempPath() + "\\wiki.txt"; //"/Users/iGuest/documents/wiki-output.txt";
+        //private string filePath = Path.GetTempPath() + "\\wiki.txt";
+        // private string filePath = "/Users/iGuest/documents/wiki-output.txt";
+        private string filePath = "/Users/iGuest/documents/abc.txt";
         private int memoryCap = 4000; // change memory to 20
 
 
