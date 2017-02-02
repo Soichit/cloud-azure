@@ -10,17 +10,14 @@
 <body>
     <img src="http://i.imgur.com/7AriHtN.jpg" />
     <div>
-        <input id="input" type="text" list="dropdown" autocomplete="off">
-        <!--<datalist id="dropdown">
-        </datalist>-->
+        <input id="input" type="text" autocomplete="off">
+        <input id="submit" type="submit" value="Save Query">
         <div id="dropdown"></div>
     </div>
 
 
     <script>
         $(document).ready(function () {
-
-
             var delay = (function(){
                 var timer = 0;
                 return function(callback, ms){
@@ -31,8 +28,8 @@
 
             $("#input").keyup(function () {
                     delay(function(){
-                        var input = $('#input').val(); //trim user input
-                        var checkedInput = input.replace(/ /g, "_") 
+                        var input = $('#input').val().trim().toLowerCase();
+                        var checkedInput = input.replace(/ /g, "_");
                         //console.log("checkedInput: " + checkedInput);
 
                         var url = "WebService1.asmx/SearchTrie";
@@ -43,18 +40,35 @@
                             type: "POST",
                             contentType: "application/json; charset=utf-8",
                             success: function (result) {
-                                console.log(result);
-                                //$("#dropdown").empty();
+                                console.log(result.d);
+                                //console.log(result.d.a);
                                 $("#dropdown").html("");
-                                $.each(result.d, function (index,obj) {
-                                    //$("#dropdown").append($("<option></option>").val(obj));
-                                    $("#dropdown").append($("<div></div>").html(obj));
+                                $.each(JSON.parse(result.d), function (key,value) {
+                                    $("#dropdown").append($("<div></div>").html(key + " - Save Count: " + value));
                                 })
                             }
                         });
                     }, 500 );
                 });
+        });
+
+        $("#submit").click(function () {
+            var input = $('#input').val().trim().toLowerCase();
+
+            var url = "WebService1.asmx/saveUserSearch";
+            $.ajax({
+                data: JSON.stringify({ input: input }),
+                dataType: "json",
+                url: url,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    $("#dropdown").html("Search query saved!");
+                }
             });
+        
+        
+        })
     </script>
 </body>
 </html>

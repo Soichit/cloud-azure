@@ -4,10 +4,21 @@
     margin-top: 10vw;
 }
 
-input {
+#input {
     width: 50%;
     height: 3em;
     line-height: 3em;
+}
+
+#submit {
+    height: 3em;
+    line-height: 3em;
+}
+
+input {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
 }
 
 img {

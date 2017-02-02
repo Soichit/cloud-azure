@@ -14,6 +14,7 @@ namespace WebRole1
         private static TrieNode root;
         private static int hybridCapacity = 20;
         private static int levenshteinDistance = 1;
+        private static Dictionary<String, int> userSearches= new Dictionary<String, int>();
 
         /// constructor
         public Trie()
@@ -30,7 +31,7 @@ namespace WebRole1
             return rearrange(root, word);
         }
 
-        public String rearrange(TrieNode current, String tempWord)
+        private String rearrange(TrieNode current, String tempWord)
         {
             current.HybridList.Add(tempWord);
             if (current.HybridList.Count <= hybridCapacity)
@@ -73,9 +74,7 @@ namespace WebRole1
             }
         }
 
-
-
-        public List<String> search(String input)
+        public Dictionary<String, int> search(String input)
         {
             List<String> result = searchPrefix(input);
 
@@ -87,7 +86,19 @@ namespace WebRole1
                 result = searchMistakes(current, inputSubstring, input, result);
                 //result = searchMistakes(root, "", input, result);
             }
-            return result;
+
+            //result[item.Key] = result[item.Key].Replace('_', ' ');
+            Dictionary<String, int> countResult = new Dictionary<String, int>();
+            foreach(String word in result)
+            {
+                String processedWord = word.Replace('_', ' ');
+                int count = userSearches.ContainsKey(processedWord) ? userSearches[processedWord] : 0;
+                countResult.Add(processedWord, count);
+                
+                
+                //countResult[word] = word.Replace('_', ' ');
+            }
+            return countResult;
         }
 
         private TrieNode traverseTrie(TrieNode current, int index, String input, String temp)
@@ -128,7 +139,10 @@ namespace WebRole1
                     }
                     if (word.StartsWith(subtractedWord))
                     {
-                        result.Add(tempWord + word);
+                        if (!result.Exists(x => x == tempWord + word))
+                        {
+                            result.Add(tempWord + word);
+                        }
                         if (result.Count == 10)
                         {
                             return result;
@@ -162,7 +176,10 @@ namespace WebRole1
                 {
                     if (result.Count < 10)
                     {
-                        result.Add(tempWord);
+                        if (!result.Exists(x => x == tempWord))
+                        {
+                            result.Add(tempWord);
+                        }
                     }
                 }
 
@@ -179,7 +196,10 @@ namespace WebRole1
 
                 foreach (String word in current.HybridList)
                 {
-                    result.Add(tempWord + word);
+                    if (!result.Exists(x => x == tempWord + word))
+                    {
+                        result.Add(tempWord + word);
+                    }
                     if (result.Count == 10)
                     {
                         return result;
@@ -205,7 +225,10 @@ namespace WebRole1
                     {
                         if (levenshtein(tempWord, input) <= levenshteinDistance)
                         {
-                            result.Add(tempWord);
+                            if (!result.Exists(x => x == tempWord))
+                            {
+                                result.Add(tempWord);
+                            }
                         }
                     }
                 }
@@ -226,7 +249,10 @@ namespace WebRole1
                     String addedWord = tempWord + word;
                     if (levenshtein(addedWord, input) <= levenshteinDistance)
                     {
-                        result.Add(addedWord);
+                        if (!result.Exists(x => x == addedWord))
+                        {
+                            result.Add(addedWord);
+                        }
                         if (result.Count == 10)
                         {
                             return result;
@@ -281,6 +307,18 @@ namespace WebRole1
             }
             // Step 7
             return d[n, m];
+        }
+        public void addUserSearch(String word)
+        {
+            if (!userSearches.ContainsKey(word))
+            {
+                userSearches.Add(word, 1);
+            }
+            else
+            {
+                userSearches[word] = userSearches[word] + 1;
+                //userSearches.Add(word, userSearches[word] + 1);
+            }
         }
     }
 }
