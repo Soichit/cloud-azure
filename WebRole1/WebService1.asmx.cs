@@ -30,7 +30,6 @@ namespace WebRole1
         private string filePath = "/Users/iGuest/documents/wiki-output.txt";
         private int memoryCap = 2000; // change memory to 20
 
-
         [WebMethod]
         public String downloadWiki()
         {
@@ -57,7 +56,7 @@ namespace WebRole1
                     }
                 }
             }
-            return "done!";
+            return "Wiki downloaded!";
         }
 
         [WebMethod]
@@ -81,24 +80,30 @@ namespace WebRole1
                     }
                     string line = sr.ReadLine().Trim().ToLower();
                     trie.insert(line);
+                    //trie.addUserSearch(line);
                     titleCounter++;
                 }
             }
-            return "done!";
+            return "Trie built!";
+        }
+
+        [WebMethod]
+        public String saveUserSearch(String input)
+        {
+            trie.addUserSearch(input);
+            return "Search query saved!";
         }
 
         [WebMethod]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-        public List<String> SearchTrie(String input)
+        public String SearchTrie(String input)
         {
-            List<String> result = trie.search(input);
-            for (int i = 0; i < result.Count; i++)
-            {
-                result[i] = result[i].Replace('_', ' ');
-            }
-            return result;
-            //JavaScriptSerializer jss = new JavaScriptSerializer();
-            //return jss.Serialize(result);
+            Dictionary<String, int> result = trie.search(input);
+            //List<String> result = trie.search(input);
+            //return result;
+
+            JavaScriptSerializer jss = new JavaScriptSerializer();
+            return jss.Serialize(result);
         }
     }
 }
