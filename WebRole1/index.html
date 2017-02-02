@@ -21,8 +21,8 @@
         $(document).ready(function () {
 
             $("#input").keyup(function () {
-                var input = $('#input').val();
-                var checkedInput = input.replace(/ /g, "_")
+                var input = $('#input').val(); //trim user input
+                var checkedInput = input.replace(/ /g, "_") 
                 //console.log("checkedInput: " + checkedInput);
 
                 var url = "WebService1.asmx/SearchTrie";

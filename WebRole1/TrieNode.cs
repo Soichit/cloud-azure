@@ -9,28 +9,30 @@ namespace WebRole1
     {
         public Dictionary<char, TrieNode> Dict { get; private set; }
         public Boolean EndOfWord { get; private set; }
-
+        public List<String> HybridList { get; private set; }
 
         public TrieNode()
         {
             this.Dict = new Dictionary<char, TrieNode>();
             this.EndOfWord = false;
+            this.HybridList = new List<String>();
         }
 
-        public TrieNode(Dictionary<char, TrieNode> dict, Boolean endOfWord)
+        public TrieNode(Dictionary<char, TrieNode> dict, Boolean endOfWord, List<String> hybridList)
         {
             this.Dict = dict;
             this.EndOfWord = endOfWord;
-        }
-
-        public void SetDict(Dictionary<char, TrieNode> newDict)
-        {
-            this.Dict = newDict;
+            this.HybridList = hybridList;
         }
 
         public void addToDict(char ch, TrieNode node)
         {
             this.Dict.Add(ch, node);
+        }
+
+        public void addToList(String s)
+        {
+            this.HybridList.Add(s);
         }
 
 
