@@ -10,38 +10,51 @@
 <body>
     <img src="http://i.imgur.com/7AriHtN.jpg" />
     <div>
-        <input id="input" type="text" list="dropdown">
-        <datalist id="dropdown">
-        </datalist>
-
+        <input id="input" type="text" list="dropdown" autocomplete="off">
+        <!--<datalist id="dropdown">
+        </datalist>-->
+        <div id="dropdown"></div>
     </div>
 
 
     <script>
         $(document).ready(function () {
 
-            $("#input").keyup(function () {
-                var input = $('#input').val(); //trim user input
-                var checkedInput = input.replace(/ /g, "_") 
-                //console.log("checkedInput: " + checkedInput);
 
-                var url = "WebService1.asmx/SearchTrie";
-                $.ajax({
-                    data: JSON.stringify({ input: checkedInput }),
-                    dataType: "json",
-                    url: url,
-                    type: "POST",
-                    contentType: "application/json; charset=utf-8",
-                    success: function (result) {
-                        console.log(result);
-                        $("#dropdown").empty();
-                        $.each(result.d, function () {
-                            $("#dropdown").append("<option value='" + this + "'>");
-                        })
-                    }
+            var delay = (function(){
+                var timer = 0;
+                return function(callback, ms){
+                    clearTimeout (timer);
+                    timer = setTimeout(callback, ms);
+                };
+            })();
+
+            $("#input").keyup(function () {
+                    delay(function(){
+                        var input = $('#input').val(); //trim user input
+                        var checkedInput = input.replace(/ /g, "_") 
+                        //console.log("checkedInput: " + checkedInput);
+
+                        var url = "WebService1.asmx/SearchTrie";
+                        $.ajax({
+                            data: JSON.stringify({ input: checkedInput }),
+                            dataType: "json",
+                            url: url,
+                            type: "POST",
+                            contentType: "application/json; charset=utf-8",
+                            success: function (result) {
+                                console.log(result);
+                                //$("#dropdown").empty();
+                                $("#dropdown").html("");
+                                $.each(result.d, function (index,obj) {
+                                    //$("#dropdown").append($("<option></option>").val(obj));
+                                    $("#dropdown").append($("<div></div>").html(obj));
+                                })
+                            }
+                        });
+                    }, 500 );
                 });
             });
-        })
     </script>
 </body>
 </html>

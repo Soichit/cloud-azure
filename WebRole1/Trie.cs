@@ -79,15 +79,32 @@ namespace WebRole1
         {
             List<String> result = searchPrefix(input);
 
-            if (result.Count < 10)
+            int inputLength = 2;
+            if (result.Count < 10 && input.Length >= inputLength)
             {
-                result = searchMistakes(root, "", input, result);
+                TrieNode current = traverseTrie(root, inputLength, input, "");
+                String inputSubstring = input.Substring(0, inputLength);
+                result = searchMistakes(current, inputSubstring, input, result);
+                //result = searchMistakes(root, "", input, result);
             }
             return result;
         }
 
+        private TrieNode traverseTrie(TrieNode current, int index, String input, String temp)
+        {
+            for(int i = 0; i < index; i++)
+            {
+                char ch = input[i];
+                if (current.Dict.ContainsKey(ch))
+                {
+                    current = current.Dict[ch];
+                }
+            }
+            return current;
+        }
 
-        public List<String> searchPrefix(String input)
+
+        private List<String> searchPrefix(String input)
         {
             // redundant variables
             List<String> result = new List<String>();

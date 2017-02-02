@@ -1,5 +1,5 @@
 ﻿body {
-    color: red;
+    /*color: red;*/
     text-align: center;
     margin-top: 10vw;
 }
@@ -12,4 +12,12 @@ input {
 
 img {
     height: 10vw;
+}
+
+#dropdown {
+    border: 1px black solid;
+    text-align: left;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
 }
