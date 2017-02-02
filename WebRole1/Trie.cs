@@ -13,6 +13,7 @@ namespace WebRole1
     {
         private static TrieNode root;
         private static int hybridCapacity = 20;
+        private static int levenshteinDistance = 1;
 
         /// constructor
         public Trie()
@@ -72,9 +73,24 @@ namespace WebRole1
             }
         }
 
+
+
         public List<String> search(String input)
         {
-            List<String> result = new List<String>(); //change list name to result
+            List<String> result = searchPrefix(input);
+
+            if (result.Count < 10)
+            {
+                result = searchMistakes(root, "", input, result);
+            }
+            return result;
+        }
+
+
+        public List<String> searchPrefix(String input)
+        {
+            // redundant variables
+            List<String> result = new List<String>();
             TrieNode current = root;
             String tempWord = "";
             char ch = '_';
@@ -82,12 +98,12 @@ namespace WebRole1
             {
                 return result;
             }
+
+
             for (int i = 0; i < input.Length; i++)
             {
                 foreach (String word in current.HybridList)
-                //for (int j = 0; j < current.HybridList.Count; j++)
                 {
-                    //String word = current.HybridList[i];
                     String subtractedWord = input;
                     if (tempWord != "")
                     {
@@ -113,11 +129,10 @@ namespace WebRole1
                     current = current.Dict[ch];
                 }
             }
-            return searchSuggestions(current, tempWord, result, input);
-            //return list;
+            return searchSuggestions(current, tempWord, input, result);
         }
 
-        private List<String> searchSuggestions(TrieNode current, String tempWord, List<String> result, String input) //change order
+        private List<String> searchSuggestions(TrieNode current, String tempWord, String input, List<String> result)
         {
             if (result.Count == 10)
             {
@@ -135,22 +150,18 @@ namespace WebRole1
                 }
 
                 foreach (KeyValuePair<char, TrieNode> item in node.Dict)
-                // for (int i = 0; i < node.Dict.Count; i++)
                 {
-                    // String item = node.Dict[i];
                     char ch = item.Key;
                     TrieNode nextNode = item.Value;
-                    result = searchSuggestions(nextNode, tempWord + ch, result, input);
+                    result = searchSuggestions(nextNode, tempWord + ch, input, result);
                     if (result.Count == 10)
                     {
                         return result;
                     }
                 }
 
-                //for (int i = 0; i < current.HybridList.Count; i++)
                 foreach (String word in current.HybridList)
                 {
-                    //String word = current.HybridList[i];
                     result.Add(tempWord + word);
                     if (result.Count == 10)
                     {
@@ -159,6 +170,100 @@ namespace WebRole1
                 }
                 return result;
             }
+        }
+
+
+        private List<String> searchMistakes(TrieNode current, String tempWord, String input, List<String> result)
+        {
+            if (result.Count == 10)
+            {
+                return result;
+            }
+            else
+            {
+                TrieNode node = current;
+                if (current.EndOfWord)
+                {
+                    if (result.Count < 10)
+                    {
+                        if (levenshtein(tempWord, input) <= levenshteinDistance)
+                        {
+                            result.Add(tempWord);
+                        }
+                    }
+                }
+
+                foreach (KeyValuePair<char, TrieNode> item in node.Dict)
+                {
+                    char ch = item.Key;
+                    TrieNode nextNode = item.Value;
+                    result = searchMistakes(nextNode, tempWord + ch, input, result);
+                    if (result.Count == 10)
+                    {
+                        return result;
+                    }
+                }
+
+                foreach (String word in current.HybridList)
+                {
+                    String addedWord = tempWord + word;
+                    if (levenshtein(addedWord, input) <= levenshteinDistance)
+                    {
+                        result.Add(addedWord);
+                        if (result.Count == 10)
+                        {
+                            return result;
+                        }
+                    }
+                }
+                return result;
+            }
+        }
+
+
+        private int levenshtein(string s, string t)
+        {
+            int n = s.Length;
+            int m = t.Length;
+            int[,] d = new int[n + 1, m + 1];
+
+            // Step 1
+            if (n == 0)
+            {
+                return m;
+            }
+
+            if (m == 0)
+            {
+                return n;
+            }
+
+            // Step 2
+            for (int i = 0; i <= n; d[i, 0] = i++)
+            {
+            }
+
+            for (int j = 0; j <= m; d[0, j] = j++)
+            {
+            }
+
+            // Step 3
+            for (int i = 1; i <= n; i++)
+            {
+                //Step 4
+                for (int j = 1; j <= m; j++)
+                {
+                    // Step 5
+                    int cost = (t[j - 1] == s[i - 1]) ? 0 : 1;
+
+                    // Step 6
+                    d[i, j] = Math.Min(
+                        Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1),
+                        d[i - 1, j - 1] + cost);
+                }
+            }
+            // Step 7
+            return d[n, m];
         }
     }
 }
