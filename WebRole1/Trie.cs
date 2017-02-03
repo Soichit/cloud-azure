@@ -14,7 +14,7 @@ namespace WebRole1
         private TrieNode root;
         private int _hybridCapacity = 20;
         private int _searchResults = 10;
-        private int _levenshteinDistance = 1;
+        private int _levenshteinDistance = 2;
         private Dictionary<String, int> userSearches= new Dictionary<String, int>();
 
         /// constructor
@@ -35,56 +35,42 @@ namespace WebRole1
         private String rearrange(TrieNode current, String tempWord)
         {
             // if parent node, then pass on string
-            if (current.Dict.Count > 0)
+            char ch = tempWord[0];
+            TrieNode node;
+
+            // check that first letter is in the dictionary key
+            if (current.Dict.ContainsKey(ch))
             {
-                char ch = tempWord[0];
-                TrieNode node;
-
-                //check that first letter is in the dictionary key
-                if (current.Dict.ContainsKey(ch))
-                {
-                    //if it does, pass that word into that node
-                    node = current.Dict[ch];
-                }
-                else
-                {
-                    //if it doesn't, create a new node with that letter and add the rest of the letters into the hybrid
-                    node = new TrieNode();
-                    current.Dict.Add(ch, node);
-                }
-                if (tempWord.Length == 1)
-                {
-                    node.SetEndOfWord(true);
-                }
-
-                if (tempWord.Length >= 2)
-                {
-                    rearrange(node, tempWord.Substring(1, tempWord.Length - 1));
-                }
+                // if it does, pass that word into that node
+                node = current.Dict[ch];
             }
-            //else if child, then add to list
+            else
+            {
+                // if it doesn't, create a new node with that letter and add the rest of the letters into the hybrid
+                node = new TrieNode();
+                current.Dict.Add(ch, node);
+            }
+            if (tempWord.Length == 1)
+            {
+                node.SetEndOfWord(true);
+            }
+
+            if (tempWord.Length >= 2)
+            {
+                rearrange(node, tempWord.Substring(1, tempWord.Length - 1));
+            }
             else if (current.Dict.Count == 0)
             {
                 current.HybridList.Add(tempWord);
-            }
-            // else if child node reaches capacity, then rearrange
-            else if (current.HybridList.Count >= _hybridCapacity && current.Dict.Count == 0)
-            {
-                foreach (String item in current.HybridList)
-                {
-                    if (item.Length == 1)
+                // if child node reaches capacity, then rearrange
+                if (current.HybridList.Count >= _hybridCapacity) {
+                    foreach (String item in current.HybridList)
                     {
-                        current.SetEndOfWord(true);
+                        rearrange(current, item.Substring(1, item.Length - 1));
                     }
-
-                    if (item.Length >= 2)
-                    {
-                        rearrange(current, tempWord.Substring(1, tempWord.Length - 1));
-                    }
-
+                    current.HybridList.Clear();
+                    return "done";
                 }
-                current.HybridList.Clear();
-                return "done";
             }
             return "done";
         }
@@ -92,32 +78,23 @@ namespace WebRole1
         public Dictionary<String, int> search(String input)
         {
             List<String> result = searchPrefix(input);
-
             int inputLength = 2;
             if (result.Count < _searchResults && input.Length >= inputLength)
             {
                 TrieNode current = traverseTrie(root, inputLength, input, "");
                 String inputSubstring = input.Substring(0, inputLength);
                 result = searchMistakes(current, inputSubstring, input, result);
-                //result = searchMistakes(root, "", input, result);
             }
-
-            //result[item.Key] = result[item.Key].Replace('_', ' ');
             Dictionary<String, int> countResult = new Dictionary<String, int>();
             foreach(String word in result)
             {
                 String processedWord = word.Replace('_', ' ');
                 int count = userSearches.ContainsKey(processedWord) ? userSearches[processedWord] : 0;
                 countResult.Add(processedWord, count);
-                
-                
-                //countResult[word] = word.Replace('_', ' ');
             }
-
             var sortedDict = from entry in countResult orderby entry.Value descending select entry;
             var result2 = sortedDict.ToDictionary(pair => pair.Key, pair => pair.Value);
             return result2;
-            //return countResult.OrderByDescending(pair => pair.Value).Take(countResult.Count);
         }
 
         private TrieNode traverseTrie(TrieNode current, int index, String input, String temp)
@@ -228,6 +205,11 @@ namespace WebRole1
             }
         }
 
+        //private List<String> searchMistakes2(TrieNode current, String tempWord, String input, List<String> result)
+        //{
+
+        //}
+
 
         private List<String> searchMistakes(TrieNode current, String tempWord, String input, List<String> result)
         {
@@ -246,7 +228,7 @@ namespace WebRole1
                         {
                             if (!result.Exists(x => x == tempWord))
                             {
-                                result.Add(tempWord);
+                                result.Add("'" + tempWord + "'");
                             }
                         }
                     }
