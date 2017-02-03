@@ -81,7 +81,7 @@ namespace WebRole1
             int inputLength = 2;
             if (result.Count < _searchResults && input.Length >= inputLength)
             {
-                TrieNode current = traverseTrie(root, inputLength, input, "");
+                TrieNode current = traverseTrie(root, inputLength, input);
                 String inputSubstring = input.Substring(0, inputLength);
                 result = searchMistakes(current, inputSubstring, input, result);
             }
@@ -97,23 +97,8 @@ namespace WebRole1
             return result2;
         }
 
-        private TrieNode traverseTrie(TrieNode current, int index, String input, String temp)
-        {
-            for(int i = 0; i < index; i++)
-            {
-                char ch = input[i];
-                if (current.Dict.ContainsKey(ch))
-                {
-                    current = current.Dict[ch];
-                }
-            }
-            return current;
-        }
-
-
         private List<String> searchPrefix(String input)
         {
-            // redundant variables
             List<String> result = new List<String>();
             TrieNode current = root;
             String tempWord = "";
@@ -122,8 +107,6 @@ namespace WebRole1
             {
                 return result;
             }
-
-
             for (int i = 0; i < input.Length; i++)
             {
                 foreach (String word in current.HybridList)
@@ -205,11 +188,21 @@ namespace WebRole1
             }
         }
 
-        //private List<String> searchMistakes2(TrieNode current, String tempWord, String input, List<String> result)
-        //{
-
-        //}
-
+        private TrieNode traverseTrie(TrieNode current, int index, String input)
+        {
+            for (int i = 0; i < index; i++)
+            {
+                char ch = input[i];
+                if (current.Dict.ContainsKey(ch))
+                {
+                    current = current.Dict[ch];
+                } else
+                {
+                    return null;
+                }
+            }
+            return current;
+        }
 
         private List<String> searchMistakes(TrieNode current, String tempWord, String input, List<String> result)
         {
@@ -264,7 +257,6 @@ namespace WebRole1
             }
         }
 
-
         private int levenshtein(string s, string t)
         {
             int n = s.Length;
@@ -309,8 +301,14 @@ namespace WebRole1
             // Step 7
             return d[n, m];
         }
-        public void addUserSearch(String word)
+        public String addUserSearch(String word)
         {
+            TrieNode current = traverseTrie(root, word.Length, word);
+            if (current == null)
+            {
+                return null;
+            }
+
             if (!userSearches.ContainsKey(word))
             {
                 userSearches.Add(word, 1);
@@ -318,8 +316,8 @@ namespace WebRole1
             else
             {
                 userSearches[word] = userSearches[word] + 1;
-                //userSearches.Add(word, userSearches[word] + 1);
             }
+            return "adding count to search done!";
         }
     }
 }
