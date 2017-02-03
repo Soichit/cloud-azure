@@ -5,12 +5,13 @@
 }
 
 #input {
-    width: 50%;
+    width: 50vw;
     height: 3em;
     line-height: 3em;
 }
 
 #submit {
+    width: 10vw;
     height: 3em;
     line-height: 3em;
 }
@@ -26,7 +27,9 @@ img {
 }
 
 #dropdown {
-    border: 1px black solid;
+    border-left: 1px black solid;
+    border-right: 1px black solid;
+    border-bottom: 1px black solid;
     text-align: left;
     width: 60vw;
     margin-left: auto;
