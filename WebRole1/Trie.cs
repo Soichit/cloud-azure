@@ -11,10 +11,11 @@ namespace WebRole1
 {
     public class Trie
     {
-        private static TrieNode root;
-        private static int hybridCapacity = 20;
-        private static int levenshteinDistance = 1;
-        private static Dictionary<String, int> userSearches= new Dictionary<String, int>();
+        private TrieNode root;
+        private int _hybridCapacity = 20;
+        private int _searchResults = 10;
+        private int _levenshteinDistance = 1;
+        private Dictionary<String, int> userSearches= new Dictionary<String, int>();
 
         /// constructor
         public Trie()
@@ -34,7 +35,7 @@ namespace WebRole1
         private String rearrange(TrieNode current, String tempWord)
         {
             current.HybridList.Add(tempWord);
-            if (current.HybridList.Count <= hybridCapacity)
+            if (current.HybridList.Count <= _hybridCapacity)
             {
                 return "done";
             }
@@ -79,7 +80,7 @@ namespace WebRole1
             List<String> result = searchPrefix(input);
 
             int inputLength = 2;
-            if (result.Count < 10 && input.Length >= inputLength)
+            if (result.Count < _searchResults && input.Length >= inputLength)
             {
                 TrieNode current = traverseTrie(root, inputLength, input, "");
                 String inputSubstring = input.Substring(0, inputLength);
@@ -98,7 +99,11 @@ namespace WebRole1
                 
                 //countResult[word] = word.Replace('_', ' ');
             }
-            return countResult;
+
+            var sortedDict = from entry in countResult orderby entry.Value descending select entry;
+            var result2 = sortedDict.ToDictionary(pair => pair.Key, pair => pair.Value);
+            return result2;
+            //return countResult.OrderByDescending(pair => pair.Value).Take(countResult.Count);
         }
 
         private TrieNode traverseTrie(TrieNode current, int index, String input, String temp)
@@ -143,7 +148,7 @@ namespace WebRole1
                         {
                             result.Add(tempWord + word);
                         }
-                        if (result.Count == 10)
+                        if (result.Count == _searchResults)
                         {
                             return result;
                         }
@@ -165,7 +170,7 @@ namespace WebRole1
 
         private List<String> searchSuggestions(TrieNode current, String tempWord, String input, List<String> result)
         {
-            if (result.Count == 10)
+            if (result.Count == _searchResults)
             {
                 return result;
             }
@@ -174,7 +179,7 @@ namespace WebRole1
                 TrieNode node = current;
                 if (current.EndOfWord)
                 {
-                    if (result.Count < 10)
+                    if (result.Count < _searchResults)
                     {
                         if (!result.Exists(x => x == tempWord))
                         {
@@ -188,7 +193,7 @@ namespace WebRole1
                     char ch = item.Key;
                     TrieNode nextNode = item.Value;
                     result = searchSuggestions(nextNode, tempWord + ch, input, result);
-                    if (result.Count == 10)
+                    if (result.Count == _searchResults)
                     {
                         return result;
                     }
@@ -200,7 +205,7 @@ namespace WebRole1
                     {
                         result.Add(tempWord + word);
                     }
-                    if (result.Count == 10)
+                    if (result.Count == _searchResults)
                     {
                         return result;
                     }
@@ -212,7 +217,7 @@ namespace WebRole1
 
         private List<String> searchMistakes(TrieNode current, String tempWord, String input, List<String> result)
         {
-            if (result.Count == 10)
+            if (result.Count == _searchResults)
             {
                 return result;
             }
@@ -221,9 +226,9 @@ namespace WebRole1
                 TrieNode node = current;
                 if (current.EndOfWord)
                 {
-                    if (result.Count < 10)
+                    if (result.Count < _searchResults)
                     {
-                        if (levenshtein(tempWord, input) <= levenshteinDistance)
+                        if (levenshtein(tempWord, input) <= _levenshteinDistance)
                         {
                             if (!result.Exists(x => x == tempWord))
                             {
@@ -238,7 +243,7 @@ namespace WebRole1
                     char ch = item.Key;
                     TrieNode nextNode = item.Value;
                     result = searchMistakes(nextNode, tempWord + ch, input, result);
-                    if (result.Count == 10)
+                    if (result.Count == _searchResults)
                     {
                         return result;
                     }
@@ -247,13 +252,13 @@ namespace WebRole1
                 foreach (String word in current.HybridList)
                 {
                     String addedWord = tempWord + word;
-                    if (levenshtein(addedWord, input) <= levenshteinDistance)
+                    if (levenshtein(addedWord, input) <= _levenshteinDistance)
                     {
                         if (!result.Exists(x => x == addedWord))
                         {
                             result.Add(addedWord);
                         }
-                        if (result.Count == 10)
+                        if (result.Count == _searchResults)
                         {
                             return result;
                         }

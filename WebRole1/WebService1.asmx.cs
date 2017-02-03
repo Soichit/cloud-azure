@@ -69,6 +69,7 @@ namespace WebRole1
             {
                 while (!sr.EndOfStream)
                 {
+                    // check for memeory every 1000 lines
                     if (titleCounter % 1000 == 0)
                     {
                         float memory = theMemCounter.NextValue();
@@ -80,7 +81,6 @@ namespace WebRole1
                     }
                     string line = sr.ReadLine().Trim().ToLower();
                     trie.insert(line);
-                    //trie.addUserSearch(line);
                     titleCounter++;
                 }
             }

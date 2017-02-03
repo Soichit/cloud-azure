@@ -35,7 +35,6 @@ namespace WebRole1
             this.HybridList.Add(s);
         }
 
-
         public void SetEndOfWord(Boolean newEndOfWord)
         {
             this.EndOfWord = newEndOfWord;

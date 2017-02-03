@@ -15,22 +15,22 @@
         <div id="dropdown"></div>
     </div>
 
-
     <script>
         $(document).ready(function () {
             var delay = (function(){
                 var timer = 0;
+
                 return function(callback, ms){
                     clearTimeout (timer);
                     timer = setTimeout(callback, ms);
                 };
             })();
 
+            // AJAX call to retrieve suggestions when keyup is called
             $("#input").keyup(function () {
                     delay(function(){
                         var input = $('#input').val().trim().toLowerCase();
                         var checkedInput = input.replace(/ /g, "_");
-                        //console.log("checkedInput: " + checkedInput);
 
                         var url = "WebService1.asmx/SearchTrie";
                         $.ajax({
@@ -40,21 +40,24 @@
                             type: "POST",
                             contentType: "application/json; charset=utf-8",
                             success: function (result) {
-                                console.log(result.d);
-                                //console.log(result.d.a);
-                                $("#dropdown").html("");
-                                $.each(JSON.parse(result.d), function (key,value) {
-                                    $("#dropdown").append($("<div></div>").html(key + " - Save Count: " + value));
-                                })
+                                console.log(result);
+                                if (result.d == "{}" && $('#input').val() != "") {
+                                    $("#dropdown").html("Can't find any results.");
+                                } else {
+                                    $("#dropdown").html("");
+                                    $.each(JSON.parse(result.d), function (key, value) {
+                                        $("#dropdown").append($("<div></div>").html(key + " - Save Count: " + value));
+                                    })
+                                }
                             }
                         });
                     }, 500 );
                 });
         });
 
+        // AJAX call to save count when user hits enter
         $("#submit").click(function () {
             var input = $('#input').val().trim().toLowerCase();
-
             var url = "WebService1.asmx/saveUserSearch";
             $.ajax({
                 data: JSON.stringify({ input: input }),
@@ -66,8 +69,6 @@
                     $("#dropdown").html("Search query saved!");
                 }
             });
-        
-        
         })
     </script>
 </body>
