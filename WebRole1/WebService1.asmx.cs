@@ -103,6 +103,11 @@ namespace WebRole1
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public String SearchTrie(String input)
         {
+            if (trie == null)
+            {
+                buildTrie();
+            }
+
             Dictionary<String, int> result = trie.search(input);
             //List<String> result = trie.search(input);
             //return result;
