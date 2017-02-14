@@ -278,7 +278,7 @@ namespace WebRole1
                     {
                         if (!result.Exists(x => x == addedWord))
                         {
-                            result.Add("'" + tempWord + "'");
+                            result.Add("'" + addedWord + "'");
                         }
                         if (result.Count == _searchResults)
                         {
@@ -334,6 +334,7 @@ namespace WebRole1
             // Step 7
             return d[n, m];
         }
+        
         public String addUserSearch(String word)
         {
             TrieNode current = traverseTrie(root, word.Length, word);

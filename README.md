@@ -23,6 +23,8 @@ The search suggestions method was also very hard to implement because there were
 
 
 Handling misspelling gracefully
+Code for Levenshtein function: https://www.dotnetperls.com/levenshtein
+
 To see this in my web service, you can try misspelling words, like “applez”, and it would return similar results within a levenshtein distance of 2. The way I implemented this, it would only check for misspelled words if I search through my suggestions regularly, and it returns less than 10 results. Only when the results returned are less than 10, I run my recursive searchMistakes function. I pass in a node that I want to start searching from and then I go through every node in the dictionary with depth-first search, and then I will check each word in the hybrid list. When checking each word, I will pass it into the levenshtein function I found online and check if the distance is less than the global distance I set, for my case it’s 2. 
 
 After implementing my code the first time, I realized that returning the results for misspellings took 5 seconds. To improve performance, instead of passing in root into my searchMistakes function, I traversed through the first 2 nodes of the passed in input with a new function, traverseTrie. So if the user entered, “APPLEZ”, I would traverse through “AP” and start searching the entire trie from there. In doing so, my algorithm does not account for all possible words that are within a levenshtein distance of 1, because the first 2 would be the same 2 letters that I hardcoded, but I was able to improve performance to under 0.5 milliseconds. This was a design decision that I made because I believed performance was more important than the unlikely chance that the user spells the first 2 letters incorrectly.
